@@ -1,64 +1,73 @@
-#include <stdio.h>
+#include <unistd.h>
 #include <stdarg.h>
 
 /**
- * _putchar - Custom putchar function.
- * @c: Character to be printed.
+ * _putchar - Writes a character to stdout.
+ * @c: The character to be written.
  *
- * Return: On success, return the character printed, otherwise, return EOF.
+ * Return: On success, 1. On error, -1 is returned and errno is set appropriately.
  */
 int _putchar(char c)
 {
-	return write(1, &c, 1);
+	return (write(1, &c, 1));
 }
 
 /**
- * _printf - Custom printf function.
- * @format: Format string with optional conversion specifiers.
+ * _printf - Custom implementation of printf.
+ * @format: The format string containing zero or more directives.
  *
- * Return: The number of characters printed (excluding the null byte used to end output to strings).
+ * Return: The number of characters printed (excluding the null byte).
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int count = 0;
-
 	va_start(args, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++; /* Move to the character after '%' */
+	int count = 0;
+	char ch;
 
-			/* Handle conversion specifiers */
-			switch (*format)
-			{
-			case 'c':
-				count += _putchar(va_arg(args, int));
-				break;
-			case 's':
-				count += printf("%s", va_arg(args, char *));
-				break;
-			case '%':
-				count += _putchar('%');
-				break;
-			default:
-				/* Unknown conversion specifier, ignore */
-				break;
-			}
+	while ((ch = *format++) != '\0')
+	{
+		if (ch != '%')
+		{
+			_putchar(ch);
+			count++;
 		}
 		else
 		{
-			/* Regular character, just print it */
-			count += _putchar(*format);
+			ch = *format++;
+			switch (ch)
+			{
+				case 'c':
+				{
+					char c = (char) va_arg(args, int);
+					_putchar(c);
+					count++;
+					break;
+				}
+				case 's':
+				{
+					const char *str = va_arg(args, const char*);
+					while (*str != '\0')
+					{
+						_putchar(*str++);
+						count++;
+					}
+					break;
+				}
+				case '%':
+				{
+					_putchar('%');
+					count++;
+					break;
+				}
+				default:
+					break;
+			}
 		}
-
-		format++; /* Move to the next character in the format string */
 	}
 
 	va_end(args);
-
 	return (count);
 }
 
