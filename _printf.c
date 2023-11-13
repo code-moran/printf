@@ -1,12 +1,12 @@
-#include <unistd.h>
+#include "main.h"
 #include <stdarg.h>
+#include <stdio.h>
 
 /**
  * _putchar - Writes a character to stdout.
  * @c: The character to be written.
  *
- * Return: On success, 1. On error, -1 is returned
- * and errno is set appropriately.
+ * Return: On success, the number of characters written. On error, -1.
  */
 int _putchar(char c)
 {
@@ -14,63 +14,97 @@ int _putchar(char c)
 }
 
 /**
- * _printf - Custom implementation of printf.
- * @format: The format string containing zero or more directives.
+ * _printf - Produces output according to a format.
+ * @format: The format string containing the conversion specifiers.
+ *          Supported conversion specifiers: %c, %s, %%, %d, %i
  *
  * Return: The number of characters printed (excluding the null byte).
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int count = 0;
-	char ch;
+	int printed_chars = 0;
+	char *str_arg;
+	int int_arg;
+	char char_arg;
 
 	va_start(args, format);
 
-	while ((ch = *format++) != '\0')
+	while (*format)
 	{
-		if (ch != '%')
+		if (*format == '%')
 		{
-			_putchar(ch);
-			count++;
-		}
-		else
-		{
-			ch = *format++;
-			switch (ch)
+			format++;
+			switch (*format)
 			{
 				case 'c':
-				{
-					char c = (char) va_arg(args, int);
-
-					_putchar(c);
-					count++;
+					char_arg = va_arg(args, int);
+					printed_chars += _putchar(char_arg);
 					break;
-				}
 				case 's':
-				{
-					const char *str = va_arg(args, const char*);
-
-					while (*str != '\0')
+					str_arg = va_arg(args, char *);
+					if (str_arg == NULL)
+						str_arg = "(null)";
+					while (*str_arg)
 					{
-						_putchar(*str++);
-						count++;
+						printed_chars += _putchar(*str_arg);
+						str_arg++;
 					}
 					break;
-				}
 				case '%':
-				{
-					_putchar('%');
-					count++;
+					printed_chars += _putchar('%');
 					break;
-				}
+				case 'd':
+				case 'i':
+					int_arg = va_arg(args, int);
+					printed_chars += print_number(int_arg);
+					break;
 				default:
+					printed_chars += _putchar('%');
+					printed_chars += _putchar(*format);
 					break;
 			}
 		}
+		else
+		{
+			printed_chars += _putchar(*format);
+		}
+
+		format++;
 	}
 
 	va_end(args);
-	return (count);
+
+	return (printed_chars);
+}
+
+/**
+ * print_number - Helper function to print a number.
+ * @n: The number to be printed.
+ *
+ * Return: The number of characters printed.
+ */
+int print_number(int n)
+{
+	int divisor = 1;
+	int printed_chars = 0;
+
+	if (n < 0)
+	{
+		printed_chars += _putchar('-');
+		n = -n;
+	}
+
+	while (n / divisor > 9)
+		divisor *= 10;
+
+	while (divisor != 0)
+	{
+		printed_chars += _putchar((n / divisor) + '0');
+		n %= divisor;
+		divisor /= 10;
+	}
+
+	return (printed_chars);
 }
 
