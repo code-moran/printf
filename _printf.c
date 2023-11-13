@@ -3,17 +3,6 @@
 #include <stdio.h>
 
 /**
- * _putchar - Writes a character to stdout.
- * @c: The character to be written.
- *
- * Return: On success, the number of characters written. On error, -1.
- */
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-
-/**
  * _printf - Produces output according to a format.
  * @format: The format string containing the conversion specifiers.
  *          Supported conversion specifiers: %c, %s, %%, %d, %i
