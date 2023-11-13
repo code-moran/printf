@@ -5,7 +5,8 @@
  * _putchar - Writes a character to stdout.
  * @c: The character to be written.
  *
- * Return: On success, 1. On error, -1 is returned and errno is set appropriately.
+ * Return: On success, 1. On error, -1 is returned
+ * and errno is set appropriately.
  */
 int _putchar(char c)
 {
@@ -21,10 +22,10 @@ int _putchar(char c)
 int _printf(const char *format, ...)
 {
 	va_list args;
-	va_start(args, format);
-
 	int count = 0;
 	char ch;
+
+	va_start(args, format);
 
 	while ((ch = *format++) != '\0')
 	{
@@ -41,6 +42,7 @@ int _printf(const char *format, ...)
 				case 'c':
 				{
 					char c = (char) va_arg(args, int);
+
 					_putchar(c);
 					count++;
 					break;
@@ -48,6 +50,7 @@ int _printf(const char *format, ...)
 				case 's':
 				{
 					const char *str = va_arg(args, const char*);
+
 					while (*str != '\0')
 					{
 						_putchar(*str++);
